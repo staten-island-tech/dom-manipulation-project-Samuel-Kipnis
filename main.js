@@ -5,18 +5,21 @@ function getDOMObject(selector) {
 }
 
 function insertData(htmlElement, data) {
-    htmlElement.innerText = data
+    let elements = ''
+    data.forEach(el => {
+        elements += `<p class='p-2 my-3 shadow-md border rounded'>${el}</p>`
+    });
+    htmlElement.innerHTML = elements
 }
 
 const outputDisplay = document.querySelector('#outputDisplay')
 
 document.querySelector('#form').addEventListener('submit', (e) => {
-    let output = ''
+    const outputs = []
     for(let selector in DOMSelectors) {
         const input = getDOMObject(selector)
-        const value = input.value
-        output += `${DOMSelectors[selector].charAt(0).toUpperCase() + DOMSelectors[selector].slice(1)}: ${input.value}\n`
+        const output = `${DOMSelectors[selector].charAt(0).toUpperCase() + DOMSelectors[selector].slice(1)}: ${input.value}`
+        outputs.push(output)
     }
-    console.log(output);
-    insertData(outputDisplay, output)
+    insertData(outputDisplay, outputs)
 })
