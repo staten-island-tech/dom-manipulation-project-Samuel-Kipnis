@@ -12,6 +12,10 @@ function insertData(htmlElement, data) {
     htmlElement.innerHTML = elements
 }
 
+function clearInput(selector) {
+    document.querySelector('#' + selector).value = ''
+}
+
 const outputDisplay = document.querySelector('#outputDisplay')
 
 document.querySelector('#form').addEventListener('submit', (e) => {
@@ -20,6 +24,7 @@ document.querySelector('#form').addEventListener('submit', (e) => {
         const input = getDOMObject(selector)
         const output = `${DOMSelectors[selector].charAt(0).toUpperCase() + DOMSelectors[selector].slice(1)}: ${input.value}`
         outputs.push(output)
+        clearInput(DOMSelectors[selector])
     }
     insertData(outputDisplay, outputs)
 })
