@@ -6,21 +6,22 @@ function getDOMObject(selector) {
 }
 
 function insertData(htmlElement, data) {
+    let elements = `<div>`
     data.forEach(el => {
         elements += `<p class='p-2 my-3 shadow-md border rounded'>${el}</p>`
     });
-    elements += '<br>'
+    elements += `<button type='button' onclick='(e) => {     
+        console.log(e);
+        el.parentElement.remove()}'>Delete</button></div>`
     htmlElement.innerHTML = elements
 }
+
 
 function clearInput(selector) {
     document.querySelector('#' + selector).value = ''
 }
 
-const outputDisplay = document.querySelector('#outputDisplay')
-
-document.querySelector('#form').addEventListener('submit', (e) => {
-    e.preventDefault()
+function createOutput() {
     const outputs = []
     for(let selector in DOMSelectors) {
         const input = getDOMObject(selector)
@@ -28,5 +29,13 @@ document.querySelector('#form').addEventListener('submit', (e) => {
         outputs.push(output)
         clearInput(DOMSelectors[selector])
     }
-    insertData(outputDisplay, outputs)
+    return outputs
+}
+
+const outputDisplay = document.querySelector('#outputDisplay')
+
+document.querySelector('#form').addEventListener('submit', (e) => {
+    e.preventDefault()
+    const output = createOutput()
+    insertData(outputDisplay, output)
 })
