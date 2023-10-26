@@ -1,21 +1,53 @@
 const DOMSelectors = ['username', 'email', 'password']
 let elements = ''
 
+const outputDisplay = document.querySelector('#outputDisplay')
+
 function getDOMObject(selector) {
     return document.getElementById(DOMSelectors[selector])
 }
 
-function insertData(htmlElement, data) {
-    let elements = `<div>`
+let count = 0;
+let allContainers = {}
+
+function createData(htmlElement, data) {
+    count++
+    const container = document.createElement('div')
+    const values = []
+    let elements = `<div class=${count}>`
     data.forEach(el => {
-        elements += `<p class='p-2 my-3 shadow-md border rounded'>${el}</p>`
+        const element = document.createElement('p')
+        element.classList.add('p-2', 'my-3', 'shadow-md', 'border', 'rounded')
+        element.innerText = el
+
+
+
+        values.push(element)
     });
-    elements += `<button type='button' onclick='(e) => {     
-        console.log(e);
-        el.parentElement.remove()}'>Delete</button></div>`
-    htmlElement.innerHTML = elements
+    values.forEach((value) => {
+        container.append(value)
+    })
+
+    const deleteButton = document.createElement('button')
+    deleteButton.type = 'button'
+    deleteButton.innerText = 'Delete'
+
+    const tempCount = count;
+    deleteButton.addEventListener('click', (e) => {
+        delete allContainers[tempCount]
+        render()
+    })
+    container.append(deleteButton)
+
+    allContainers[count] = container
 }
 
+function render() {
+    outputDisplay.innerHTML = ''
+    for(let container in allContainers) {
+        outputDisplay.append(allContainers[container])
+    }
+}
 
 function clearInput(selector) {
     document.querySelector('#' + selector).value = ''
@@ -32,10 +64,10 @@ function createOutput() {
     return outputs
 }
 
-const outputDisplay = document.querySelector('#outputDisplay')
 
 document.querySelector('#form').addEventListener('submit', (e) => {
     e.preventDefault()
     const output = createOutput()
-    insertData(outputDisplay, output)
+    createData(outputDisplay, output)
+    render()
 })
