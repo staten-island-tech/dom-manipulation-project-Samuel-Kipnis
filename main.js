@@ -7,39 +7,49 @@ function getDOMObject(selector) {
     return document.getElementById(DOMSelectors[selector])
 }
 
-let count = 0;
+let inputNum = 0;
 let allContainers = {}
 
-function createData(htmlElement, data) {
-    count++
+function createHTML(inputValues) {
+    inputNum++
     const container = document.createElement('div')
-    const values = []
-    let elements = `<div class=${count}>`
-    data.forEach(el => {
+    const outputData = createOutputs(inputValues)
+
+    outputData.forEach((value) => {
+        container.append(value)
+    })
+
+    const deleteButton = createButton(inputNum)
+    container.append(deleteButton)
+
+    allContainers[inputNum] = container
+}
+
+function createOutputs(inputValues) {
+    const result = []
+    inputValues.forEach(el => {
         const element = document.createElement('p')
         element.classList.add('p-2', 'my-3', 'shadow-md', 'border', 'rounded')
         element.innerText = el
 
-
-
-        values.push(element)
+        result.push(element)
     });
-    values.forEach((value) => {
-        container.append(value)
-    })
 
+    return result
+}
+
+function createButton(inputNum) {
     const deleteButton = document.createElement('button')
     deleteButton.type = 'button'
     deleteButton.innerText = 'Delete'
 
-    const tempCount = count;
+    const tempNum = inputNum;
     deleteButton.addEventListener('click', (e) => {
-        delete allContainers[tempCount]
+        delete allContainers[tempNum]
         render()
     })
-    container.append(deleteButton)
 
-    allContainers[count] = container
+    return deleteButton
 }
 
 function render() {
@@ -53,21 +63,21 @@ function clearInput(selector) {
     document.querySelector('#' + selector).value = ''
 }
 
-function createOutput() {
-    const outputs = []
+function getValues() {
+    const values = []
     for(let selector in DOMSelectors) {
         const input = getDOMObject(selector)
         const output = `${DOMSelectors[selector].charAt(0).toUpperCase() + DOMSelectors[selector].slice(1)}: ${input.value}`
-        outputs.push(output)
+        values.push(output)
         clearInput(DOMSelectors[selector])
     }
-    return outputs
+    return values
 }
 
 
 document.querySelector('#form').addEventListener('submit', (e) => {
     e.preventDefault()
-    const output = createOutput()
-    createData(outputDisplay, output)
+    const values = getValues()
+    createHTML(values)
     render()
 })
